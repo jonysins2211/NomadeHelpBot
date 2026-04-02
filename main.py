@@ -1,24 +1,38 @@
 # ============================================================
-#Group Manager Bot
-# Author: LearningBotsOfficial (https://github.com/LearningBotsOfficial) 
-# Support: https://t.me/LearningBotsCommunity
-# Channel: https://t.me/learning_bots
-# YouTube: https://youtube.com/@learning_bots
-# License: Open-source (keep credits, no resale)
+# Group Manager Bot
 # ============================================================
 
 from pyrogram import Client
 from config import API_ID, API_HASH, BOT_TOKEN
 import logging
+import threading
+import os
+from flask import Flask
 
-# 🔐 Import security
+# 🔐 Security
 from security import verify_integrity, get_runtime_key
 
 logging.basicConfig(level=logging.INFO)
 
 verify_integrity()
-
 RUNTIME_KEY = get_runtime_key()
+
+# ================== 🌐 Flask Web Server ==================
+
+web_app = Flask(__name__)
+
+@web_app.route("/")
+def home():
+    return "Natasha Group Bot Running 🚀"
+
+def run_web():
+    port = int(os.environ.get("PORT", 8000))
+    web_app.run(host="0.0.0.0", port=port)
+
+# Start web server in background
+threading.Thread(target=run_web).start()
+
+# ================== 🤖 Telegram Bot ==================
 
 app = Client(
     "group_manager_bot",
